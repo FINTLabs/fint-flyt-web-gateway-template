@@ -1,11 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.4.3"
+    id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version "2.1.10"
     kotlin("plugin.spring") version "2.1.10"
     id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
+    id("com.github.ben-manes.versions") version "0.52.0"
 }
 
 group = "no.fintlabs"
@@ -34,7 +35,7 @@ dependencies {
 
     implementation("no.fintlabs:fint-kafka:5.0.0-rc-7") // TODO: Proper version
     implementation("no.fintlabs:fint-kafka-request-reply:5.0.0-rc-7") // TODO: Proper version
-    implementation("no.fintlabs:fint-flyt-kafka:3.1.1")
+    implementation("no.fintlabs:fint-flyt-kafka:3.1.2")
     implementation("no.fintlabs:fint-flyt-web-instance-gateway:0-SNAPSHOT") // TODO: Proper version
     implementation("no.fintlabs:fint-flyt-web-resource-server:0-SNAPSHOT") // TODO: Proper version
 
