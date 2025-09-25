@@ -53,15 +53,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-ktlint {
-    version.set("1.7.1")
-    ignoreFailures.set(false)
-    outputToConsole.set(true)
-    filter {
-        exclude("**/generated/**")
-    }
-}
-
 tasks.named("check") {
     dependsOn("ktlintCheck")
 }
