@@ -1,8 +1,8 @@
-package no.fintlabs.gateway.simple
+package no.novari.flyt.example.gateway.instance.simple
 
-import no.fintlabs.gateway.model.SimpleExample
-import no.fintlabs.gateway.webinstance.InstanceProcessor
-import no.fintlabs.gateway.webinstance.InstanceProcessorFactoryService
+import no.novari.flyt.example.gateway.instance.model.SimpleExample
+import no.novari.flyt.gateway.webinstance.InstanceProcessor
+import no.novari.flyt.gateway.webinstance.InstanceProcessorFactoryService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -13,13 +13,9 @@ class SimpleProcessorConfiguration {
         instanceProcessorFactoryService: InstanceProcessorFactoryService,
         simpleMappingService: SimpleMappingService,
     ): InstanceProcessor<SimpleExample> {
-        val idFunction: (SimpleExample) -> String? = { se ->
-            se.sysId
-        }
-
         return instanceProcessorFactoryService.createInstanceProcessor(
             "simpleExample",
-            idFunction,
+            { se -> se.sysId },
             simpleMappingService,
         )
     }

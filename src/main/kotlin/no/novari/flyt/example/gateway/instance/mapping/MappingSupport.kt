@@ -1,4 +1,4 @@
-package no.fintlabs.gateway.mapping
+package no.novari.flyt.example.gateway.instance.mapping
 
 internal fun MutableMap<String, String>.putOrEmpty(
     key: String,

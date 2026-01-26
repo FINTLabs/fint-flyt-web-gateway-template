@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.4.3"
+    id("org.springframework.boot") version "3.5.9"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version "2.1.10"
     kotlin("plugin.spring") version "2.1.10"
@@ -27,16 +27,15 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("no.fintlabs:fint-kafka:5.0.0-rc-7") // TODO: Proper version
-    implementation("no.fintlabs:fint-kafka-request-reply:5.0.0-rc-7") // TODO: Proper version
-    implementation("no.fintlabs:fint-flyt-kafka:3.1.1")
-    implementation("no.fintlabs:fint-flyt-web-instance-gateway:0-SNAPSHOT") // TODO: Proper version
-    implementation("no.fintlabs:fint-flyt-web-resource-server:0-SNAPSHOT") // TODO: Proper version
+    implementation("no.novari:flyt-web-instance-gateway:1.3.6")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

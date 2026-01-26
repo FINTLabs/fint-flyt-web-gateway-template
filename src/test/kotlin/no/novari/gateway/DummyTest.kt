@@ -1,4 +1,4 @@
-package no.fintlabs.gateway
+package no.novari.gateway
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.Test

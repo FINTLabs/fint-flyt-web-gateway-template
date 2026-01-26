@@ -1,10 +1,10 @@
-package no.fintlabs.gateway
+package no.novari.flyt.example.gateway.instance
 
-import no.fintlabs.gateway.model.AdvancedExample
-import no.fintlabs.gateway.model.SimpleExample
-import no.fintlabs.gateway.model.SimpleExampleStatus
-import no.fintlabs.gateway.webinstance.InstanceProcessor
-import no.fintlabs.webresourceserver.UrlPaths.EXTERNAL_API
+import no.novari.flyt.example.gateway.instance.model.AdvancedExample
+import no.novari.flyt.example.gateway.instance.model.SimpleExample
+import no.novari.flyt.example.gateway.instance.model.SimpleExampleStatus
+import no.novari.flyt.gateway.webinstance.InstanceProcessor
+import no.novari.flyt.webresourceserver.UrlPaths.EXTERNAL_API
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("${EXTERNAL_API}example/instances")
+@RequestMapping("$EXTERNAL_API/example/instances")
 class ExampleController(
     @param:Qualifier("simpleProcessor")
     private val simpleExampleProcessor: InstanceProcessor<SimpleExample>,
@@ -25,7 +25,7 @@ class ExampleController(
 ) {
     @GetMapping("/simple/{instanceId}/status")
     fun getSimpleStatus(
-        @PathVariable("instanceId") instanceId: String,
+        @PathVariable instanceId: String,
     ): SimpleExampleStatus {
         return SimpleExampleStatus(instanceId)
     }
