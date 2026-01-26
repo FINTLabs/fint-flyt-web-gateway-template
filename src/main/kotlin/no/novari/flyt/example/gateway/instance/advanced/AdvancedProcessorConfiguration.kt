@@ -1,8 +1,8 @@
-package no.fintlabs.gateway.advanced
+package no.novari.flyt.example.gateway.instance.advanced
 
-import no.fintlabs.gateway.model.AdvancedExample
-import no.fintlabs.gateway.webinstance.InstanceProcessor
-import no.fintlabs.gateway.webinstance.InstanceProcessorFactoryService
+import no.novari.flyt.example.gateway.instance.model.AdvancedExample
+import no.novari.flyt.gateway.webinstance.InstanceProcessor
+import no.novari.flyt.gateway.webinstance.InstanceProcessorFactoryService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -13,13 +13,9 @@ class AdvancedProcessorConfiguration {
         instanceProcessorFactoryService: InstanceProcessorFactoryService,
         advancedMappingService: AdvancedMappingService,
     ): InstanceProcessor<AdvancedExample> {
-        val idFunction: (AdvancedExample) -> String? = { ae ->
-            ae.sysId
-        }
-
         return instanceProcessorFactoryService.createInstanceProcessor(
             "advancedExample",
-            idFunction,
+            { ae -> ae.sysId },
             advancedMappingService,
         )
     }

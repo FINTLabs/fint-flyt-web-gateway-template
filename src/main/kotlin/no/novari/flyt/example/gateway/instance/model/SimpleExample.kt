@@ -1,4 +1,4 @@
-package no.fintlabs.gateway.model
+package no.novari.flyt.example.gateway.instance.model
 
 data class SimpleExample(
     val sysId: String,

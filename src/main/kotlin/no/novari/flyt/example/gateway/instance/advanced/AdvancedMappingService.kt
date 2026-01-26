@@ -1,12 +1,12 @@
-package no.fintlabs.gateway.advanced
+package no.novari.flyt.example.gateway.instance.advanced
 
-import no.fintlabs.gateway.mapping.putOrEmpty
-import no.fintlabs.gateway.model.AdvancedExample
-import no.fintlabs.gateway.model.Dokument
-import no.fintlabs.gateway.model.Saksbehandler
-import no.fintlabs.gateway.webinstance.InstanceMapper
-import no.fintlabs.gateway.webinstance.model.File
-import no.fintlabs.gateway.webinstance.model.instance.InstanceObject
+import no.novari.flyt.example.gateway.instance.mapping.putOrEmpty
+import no.novari.flyt.example.gateway.instance.model.AdvancedExample
+import no.novari.flyt.example.gateway.instance.model.Dokument
+import no.novari.flyt.example.gateway.instance.model.Saksbehandler
+import no.novari.flyt.gateway.webinstance.InstanceMapper
+import no.novari.flyt.gateway.webinstance.model.File
+import no.novari.flyt.gateway.webinstance.model.instance.InstanceObject
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Service

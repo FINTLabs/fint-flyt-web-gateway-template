@@ -1,4 +1,4 @@
-package no.fintlabs
+package no.novari.flyt
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
