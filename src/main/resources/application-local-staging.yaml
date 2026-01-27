@@ -2,7 +2,7 @@ fint:
     org-id: novari.no
 novari:
     flyt:
-        isy-graving:
+        example:
             dispatch:
                 enabled: false
                 api-key: ${NOVARI_FLYT_ISY_GRAVING_DISPATCH_API_KEY:}
