@@ -1,31 +1,30 @@
 # FINT Flyt Web Gateway Template
 
-## Introduksjon
-Dette repoet fungerer som en mal ("template") for å sette opp en ny *instance gateway* i FINT Flyt-plattformen.
-Applikasjonen inkluderer eksempler på både enkel og avansert bruk:
-- **Enkel**: prosesserer en enkelt instans uten collections og uten filopplasting.
-- **Avansert**: demonstrerer bruk av collections og støtte for filopplasting.
+## Introduction
+This repository is a template for setting up a new *instance gateway* in the FINT Flyt platform.
+The application includes examples of both simple and advanced usage:
+- **Simple**: processes a single instance without collections and without file upload.
+- **Advanced**: demonstrates the use of collections and support for file upload.
 
-## Teknologi
-* Spring Boot 3.4
-* Java 21
-* Kotlin
-* ktlint
-* Blocking-arkitektur (ikke reaktiv)
+## Technology
+- Spring Boot 3.4
+- Java 21
+- Kotlin
+- ktlint
+- Blocking architecture (non-reactive)
 
-## Avhengigheter
-Prosjektet er bygget på følgende avhengigheter:
-* `fint-kafka` v5.x
-* `fint-kafka-request-reply` v5.x
-* `fint-flyt-web-instance-gateway`
-* `fint-flyt-web-resource-server`
+## Dependencies
+This project now only needs:
+- `fint-flyt-web-instance-gateway`
+
+The `fint-flyt-web-instance-gateway` dependency already includes the other required dependencies.
 
 ## ktlint
-`ktlint` brukes for å sikre enhetlig kodeformattering og stil i prosjektet.
+`ktlint` is used to ensure consistent code formatting and style in the project.
 
-### Bruk i IntelliJ
-For å aktivere `ktlint` i IntelliJ:
-1. Installer `ktlint`-pluginet via *Settings → Plugins*.
-2. Gå til *Settings → Tools → ktlint* for konfigurasjon.
-3. Aktiver *Distract Free Mode* for en ryddig arbeidsflate.
-   I denne modusen brukes `ktlint`-formattering automatisk ved lagring.
+### Using it in IntelliJ
+To enable `ktlint` in IntelliJ:
+1. Install the `ktlint` plugin via *Settings → Plugins*.
+2. Go to *Settings → Tools → ktlint* to configure it.
+3. Enable *Distract Free Mode* for a cleaner workspace.
+   In this mode, `ktlint` formatting is applied automatically on save.
