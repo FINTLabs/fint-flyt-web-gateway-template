@@ -11,19 +11,21 @@ class SimpleMappingServiceTest {
 
     @Test
     fun `maps simple example fields to instance object`() {
-        val input = SimpleExample(
-            sysId = "sys-1",
-            string1 = "hello",
-            int1 = 42,
-        )
+        val input =
+            SimpleExample(
+                sysId = "sys-1",
+                string1 = "hello",
+                int1 = 42,
+            )
 
-        val result = service.map(
-            sourceApplicationId = 1L,
-            incomingInstance = input,
-            persistFile = { _: File ->
-                throw IllegalStateException("persistFile should not be called for simple mapping")
-            },
-        )
+        val result =
+            service.map(
+                sourceApplicationId = 1L,
+                incomingInstance = input,
+                persistFile = { _: File ->
+                    throw IllegalStateException("persistFile should not be called for simple mapping")
+                },
+            )
 
         assertEquals(
             mapOf(
