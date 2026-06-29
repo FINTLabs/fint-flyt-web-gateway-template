@@ -57,9 +57,9 @@ Run this gateway with local profile:
 ```
 
 ## Technology
-- Spring Boot 3.5.9
-- Java 21
-- Kotlin 2.1.10
+- Spring Boot 3.5.14
+- Java 25
+- Kotlin 2.4.0
 - ktlint
 - Blocking architecture (non-reactive)
 
