@@ -57,7 +57,7 @@ Run this gateway with local profile:
 ```
 
 ## Technology
-- Spring Boot 3.5.14
+- Spring Boot 3.5.15
 - Java 25
 - Kotlin 2.4.0
 - ktlint
@@ -65,7 +65,7 @@ Run this gateway with local profile:
 
 ## Dependencies
 This template depends on:
-- `no.novari:flyt-web-instance-gateway:1.3.6`
+- `no.novari:flyt-web-instance-gateway:2.2.0`
 
 ## Additional Documentation
 For more details on FINT Flyt architecture and setup, see:
