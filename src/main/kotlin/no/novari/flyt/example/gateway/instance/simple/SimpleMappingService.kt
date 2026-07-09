@@ -2,9 +2,9 @@ package no.novari.flyt.example.gateway.instance.simple
 
 import no.novari.flyt.example.gateway.instance.mapping.putOrEmpty
 import no.novari.flyt.example.gateway.instance.model.SimpleExample
-import no.novari.flyt.gateway.webinstance.InstanceMapper
-import no.novari.flyt.gateway.webinstance.model.File
-import no.novari.flyt.gateway.webinstance.model.instance.InstanceObject
+import no.novari.flyt.gateway.instance.InstanceMapper
+import no.novari.flyt.gateway.instance.model.File
+import no.novari.flyt.gateway.instance.model.instance.InstanceObject
 import org.springframework.stereotype.Service
 import java.util.UUID
 

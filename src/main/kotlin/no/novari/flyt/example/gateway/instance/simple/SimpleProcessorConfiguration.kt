@@ -1,8 +1,8 @@
 package no.novari.flyt.example.gateway.instance.simple
 
 import no.novari.flyt.example.gateway.instance.model.SimpleExample
-import no.novari.flyt.gateway.webinstance.InstanceProcessor
-import no.novari.flyt.gateway.webinstance.InstanceProcessorFactoryService
+import no.novari.flyt.gateway.instance.InstanceProcessor
+import no.novari.flyt.gateway.instance.InstanceProcessorFactoryService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
