@@ -3,32 +3,30 @@ package no.novari.flyt.example.gateway.instance.advanced
 import no.novari.flyt.example.gateway.instance.model.AdvancedExample
 import no.novari.flyt.example.gateway.instance.model.CaseWorker
 import no.novari.flyt.example.gateway.instance.model.Document
-import no.novari.flyt.example.gateway.instance.model.FileContent
-import no.novari.flyt.gateway.instance.model.File
+import no.novari.flyt.gateway.instance.model.MultipartFileReference
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import java.util.UUID
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-class AdvancedMappingServiceTest {
-    private val service = AdvancedMappingService()
+class AdvancedMultipartMappingServiceTest {
+    private val service = AdvancedMultipartMappingService()
 
-    @OptIn(ExperimentalEncodingApi::class)
     @Test
-    fun `maps advanced example with documents and case workers`() {
-        val fileBytes = byteArrayOf(1, 2, 3)
+    fun `maps advanced multipart example with file references and case workers`() {
+        val fileReference =
+            MultipartFileReference(
+                partName = "documents",
+                fileName = "attachment.pdf",
+                originalFilename = "attachment.pdf",
+                type = MediaType.APPLICATION_PDF,
+            )
         val document =
             Document(
                 title = "Original title",
-                fileContent =
-                    FileContent(
-                        fileName = "attachment.pdf",
-                        mimeType = "application/pdf",
-                        base64 = fileBytes,
-                    ),
+                multipartFileReference = fileReference,
             )
         val caseWorker = CaseWorker(email = "caseworker@example.com", name = "Case Worker")
         val input =
@@ -40,27 +38,21 @@ class AdvancedMappingServiceTest {
                 caseWorkers = listOf(caseWorker),
             )
 
-        val capturedFiles = mutableListOf<File>()
+        val capturedFileReferences = mutableListOf<MultipartFileReference>()
         val expectedFileId = UUID.fromString("f81d4fae-7dec-11d0-a765-00a0c91e6bf6")
 
         val result =
             service.map(
                 sourceApplicationId = 99L,
                 incomingInstance = input,
-                persistFile = { file ->
-                    capturedFiles += file
+                persistFile = { reference ->
+                    capturedFileReferences += reference
                     expectedFileId
                 },
             )
 
-        assertEquals(1, capturedFiles.size)
-        val capturedFile = capturedFiles.single()
-        assertEquals("attachment.pdf", capturedFile.name)
-        assertEquals(99L, capturedFile.sourceApplicationId)
-        assertEquals("sys-adv-1", capturedFile.sourceApplicationInstanceId)
-        assertEquals(MediaType.APPLICATION_PDF, capturedFile.type)
-        assertEquals("UTF-8", capturedFile.encoding)
-        assertEquals(Base64.encode(fileBytes), capturedFile.base64Contents)
+        assertEquals(1, capturedFileReferences.size)
+        assertSame(fileReference, capturedFileReferences.single())
 
         assertEquals(
             mapOf(
@@ -71,13 +63,7 @@ class AdvancedMappingServiceTest {
             result.valuePerKey,
         )
 
-        val documentObjects = result.objectCollectionPerKey.getValue("documents")
-        val caseWorkerObjects = result.objectCollectionPerKey.getValue("caseWorkers")
-
-        assertEquals(1, documentObjects.size)
-        assertEquals(1, caseWorkerObjects.size)
-
-        val documentObject = documentObjects.single()
+        val documentObject = result.objectCollectionPerKey.getValue("documents").single()
         assertEquals(
             mapOf(
                 "title" to "attachment.pdf",
@@ -88,7 +74,7 @@ class AdvancedMappingServiceTest {
             documentObject.valuePerKey,
         )
 
-        val caseWorkerObject = caseWorkerObjects.single()
+        val caseWorkerObject = result.objectCollectionPerKey.getValue("caseWorkers").single()
         assertEquals(
             mapOf(
                 "email" to "caseworker@example.com",

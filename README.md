@@ -1,7 +1,7 @@
-# FINT FLYT WEB GATEWAY TEMPLATE
+# FINT FLYT GATEWAY TEMPLATE
 
 ## Overview
-This template is a skeleton gateway with example code for creating a web instance gateway in FINT Flyt. It receives incoming HTTP requests, maps payloads to `InstanceObject`, and publishes data internally in the FINT Flyt flow.
+This template is a skeleton gateway with example code for creating an instance gateway in FINT Flyt. It receives incoming HTTP requests, maps payloads to `InstanceObject`, and publishes data internally in the FINT Flyt flow.
 
 The project includes two example flows:
 - **Simple**: a single instance without collections and without file upload.
@@ -38,7 +38,35 @@ Each processor uses an `InstanceMapper` implementation:
 - `src/main/kotlin/no/novari/flyt/example/gateway/instance/simple/SimpleMappingService.kt`
 - `src/main/kotlin/no/novari/flyt/example/gateway/instance/advanced/AdvancedMappingService.kt`
 
-Use the advanced mapping example if you need to persist attachments through the file service.
+Use the advanced mapping example if you need to persist attachments through the file service. The advanced example supports both:
+- JSON requests with base64 encoded file content through `InstanceProcessor` and `InstanceMapper`.
+- Multipart requests with `MultipartFileReference` through `MultipartInstanceProcessor` and `MultipartInstanceMapper`.
+
+Multipart requests to `/api/example/instances/advanced` must include an `instance` part containing the JSON payload, plus one or more file parts. The JSON payload should reference file parts with `multipartFileReference`:
+
+```json
+{
+  "sysId": "sys-adv-1",
+  "string1": "hello",
+  "int1": 7,
+  "documents": [
+    {
+      "title": "Attachment",
+      "multipartFileReference": {
+        "partName": "documents",
+        "fileName": "attachment.pdf",
+        "originalFilename": "attachment.pdf"
+      }
+    }
+  ],
+  "caseWorkers": [
+    {
+      "email": "caseworker@example.com",
+      "name": "Case Worker"
+    }
+  ]
+}
+```
 
 ## Testing Locally
 Run `docker-compose.yaml` to start local dependencies (Kafka, Kafdrop, Postgres). Kafka messages can be inspected in Kafdrop:
@@ -56,16 +84,25 @@ Run this gateway with local profile:
 ./gradlew bootRun --args='--spring.profiles.active=local-staging'
 ```
 
+## GitHub Workflows
+The template uses shared workflows from `FINTLabs/fint-flyt-github-workflows`:
+- `CI.yaml` builds and optionally publishes an image.
+- `CD.yaml` deploys completed main-branch builds.
+- `MD.yaml` builds, publishes, and deploys manually to the selected cluster and organisation.
+
 ## Technology
 - Spring Boot 3.5.15
 - Java 25
 - Kotlin 2.4.0
 - ktlint
+- Gradle 9.6.1
 - Blocking architecture (non-reactive)
 
 ## Dependencies
 This template depends on:
-- `no.novari:flyt-web-instance-gateway:2.2.0`
+- `no.novari:flyt-gateway-starter:3.0.0`
+
+The gateway starter APIs use the `no.novari.flyt.gateway.instance` package.
 
 ## Additional Documentation
 For more details on FINT Flyt architecture and setup, see:

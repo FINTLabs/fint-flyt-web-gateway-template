@@ -2,11 +2,12 @@ package no.novari.flyt.example.gateway.instance.advanced
 
 import no.novari.flyt.example.gateway.instance.mapping.putOrEmpty
 import no.novari.flyt.example.gateway.instance.model.AdvancedExample
-import no.novari.flyt.example.gateway.instance.model.Dokument
-import no.novari.flyt.example.gateway.instance.model.Saksbehandler
-import no.novari.flyt.gateway.webinstance.InstanceMapper
-import no.novari.flyt.gateway.webinstance.model.File
-import no.novari.flyt.gateway.webinstance.model.instance.InstanceObject
+import no.novari.flyt.example.gateway.instance.model.CaseWorker
+import no.novari.flyt.example.gateway.instance.model.Document
+import no.novari.flyt.example.gateway.instance.model.FileContent
+import no.novari.flyt.gateway.instance.InstanceMapper
+import no.novari.flyt.gateway.instance.model.File
+import no.novari.flyt.gateway.instance.model.instance.InstanceObject
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.stereotype.Service
@@ -22,46 +23,42 @@ class AdvancedMappingService : InstanceMapper<AdvancedExample> {
         persistFile: (File) -> UUID,
     ): InstanceObject {
         return with(incomingInstance) {
-            val dokumenterInstanceObjects =
+            val documentInstanceObjects =
                 mapAttachmentDocumentsToInstanceObjects(
                     persistFile = persistFile,
                     sourceApplicationId = sourceApplicationId,
                     sourceApplicationInstanceId = incomingInstance.sysId,
-                    dokumenter = dokumenter,
+                    documents = documents,
                 )
-
-            val saksbehandlerInstanceObjects =
-                mapSaksbehandlerToInstanceObjects(
-                    saksbehandlere = saksbehandlere,
-                )
-
-            val valuePerKey =
-                buildMap {
-                    putOrEmpty("sysId", sysId)
-                    putOrEmpty("string1", string1)
-                    putOrEmpty("int1", int1)
-                }
 
             val objectCollectionPerKey =
                 mutableMapOf<String, Collection<InstanceObject>>(
-                    "dokumenter" to dokumenterInstanceObjects,
-                    "saksbehandlere" to saksbehandlerInstanceObjects,
+                    "documents" to documentInstanceObjects,
+                    "caseWorkers" to mapCaseWorkersToInstanceObjects(caseWorkers),
                 )
 
-            InstanceObject(valuePerKey, objectCollectionPerKey)
+            InstanceObject(
+                valuePerKey =
+                    buildMap {
+                        putOrEmpty("sysId", sysId)
+                        putOrEmpty("string1", string1)
+                        putOrEmpty("int1", int1)
+                    },
+                objectCollectionPerKey = objectCollectionPerKey,
+            )
         }
     }
 
-    private fun mapSaksbehandlerToInstanceObjects(saksbehandlere: List<Saksbehandler>): List<InstanceObject> {
-        return saksbehandlere.map(::mapSaksBehandlerToInstanceObject)
+    private fun mapCaseWorkersToInstanceObjects(caseWorkers: List<CaseWorker>): List<InstanceObject> {
+        return caseWorkers.map(::mapCaseWorkerToInstanceObject)
     }
 
-    private fun mapSaksBehandlerToInstanceObject(saksbehandler: Saksbehandler): InstanceObject {
+    private fun mapCaseWorkerToInstanceObject(caseWorker: CaseWorker): InstanceObject {
         return InstanceObject(
             valuePerKey =
                 buildMap {
-                    putOrEmpty("epost", saksbehandler.epost)
-                    putOrEmpty("navn", saksbehandler.navn)
+                    putOrEmpty("email", caseWorker.email)
+                    putOrEmpty("name", caseWorker.name)
                 },
         )
     }
@@ -70,22 +67,27 @@ class AdvancedMappingService : InstanceMapper<AdvancedExample> {
         persistFile: (File) -> UUID,
         sourceApplicationId: Long,
         sourceApplicationInstanceId: String,
-        dokumenter: List<Dokument>,
+        documents: List<Document>,
     ): List<InstanceObject> {
-        return dokumenter.map {
+        return documents.map {
             mapAttachmentDocumentToInstanceObject(
                 persistFile = persistFile,
                 sourceApplicationId = sourceApplicationId,
                 sourceApplicationInstanceId = sourceApplicationInstanceId,
-                dokument = it,
+                document = it,
             )
         }
     }
 
-    private fun getMediaTypeFromFilnavn(filnavn: String): MediaType {
-        val mediaType = MediaTypeFactory.getMediaType(filnavn)
+    private fun getMediaTypeFromFileContent(fileContent: FileContent): MediaType {
+        fileContent.mimeType
+            .takeIf(String::isNotBlank)
+            ?.let(MediaType::parseMediaType)
+            ?.let { return it }
+
+        val mediaType = MediaTypeFactory.getMediaType(fileContent.fileName)
         return mediaType.orElseThrow {
-            IllegalArgumentException("No media type found for fileName=$filnavn")
+            IllegalArgumentException("No media type found for fileName=${fileContent.fileName}")
         }
     }
 
@@ -93,16 +95,16 @@ class AdvancedMappingService : InstanceMapper<AdvancedExample> {
     private fun toFile(
         sourceApplicationId: Long,
         sourceApplicationInstanceId: String,
-        dokument: Dokument,
+        fileContent: FileContent,
         mediaType: MediaType,
     ): File {
         return File(
-            name = dokument.fil.filnavn,
+            name = fileContent.fileName,
             type = mediaType,
             sourceApplicationId = sourceApplicationId,
             sourceApplicationInstanceId = sourceApplicationInstanceId,
             encoding = "UTF-8",
-            base64Contents = Base64.encode(dokument.fil.base64),
+            base64Contents = Base64.encode(fileContent.base64),
         )
     }
 
@@ -110,26 +112,34 @@ class AdvancedMappingService : InstanceMapper<AdvancedExample> {
         persistFile: (File) -> UUID,
         sourceApplicationId: Long,
         sourceApplicationInstanceId: String,
-        dokument: Dokument,
+        document: Document,
     ): InstanceObject {
-        val mediaType = getMediaTypeFromFilnavn(dokument.fil.filnavn)
-        val file = toFile(sourceApplicationId, sourceApplicationInstanceId, dokument, mediaType)
+        val fileContent =
+            requireNotNull(document.fileContent) {
+                "Document '${document.title}' must contain fileContent when advanced JSON endpoint is used"
+            }
+        val mediaType = getMediaTypeFromFileContent(fileContent)
+        val file = toFile(sourceApplicationId, sourceApplicationInstanceId, fileContent, mediaType)
         val fileId = persistFile(file)
-        return mapAttachmentDocumentAndFileIdToInstanceObject(dokument, mediaType, fileId)
+        return mapAttachmentDocumentAndFileIdToInstanceObject(
+            fileName = fileContent.fileName,
+            mediaType = mediaType.toString(),
+            fileId = fileId,
+        )
     }
 
     private fun mapAttachmentDocumentAndFileIdToInstanceObject(
-        dokument: Dokument,
-        mediaType: MediaType,
+        fileName: String,
+        mediaType: String?,
         fileId: UUID,
     ): InstanceObject {
         return InstanceObject(
             valuePerKey =
                 buildMap {
-                    putOrEmpty("tittel", dokument.fil.filnavn)
-                    putOrEmpty("filnavn", dokument.fil.filnavn)
-                    putOrEmpty("mediatype", mediaType.toString())
-                    putOrEmpty("fil", fileId)
+                    putOrEmpty("title", fileName)
+                    putOrEmpty("fileName", fileName)
+                    putOrEmpty("mediaType", mediaType)
+                    putOrEmpty("file", fileId)
                 },
         )
     }
